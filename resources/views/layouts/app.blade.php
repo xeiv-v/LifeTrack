@@ -180,10 +180,8 @@
         }
 
         /* =====================
-           TEXT VISIBILITY FIX (INI YANG PENTING)
+        TEXT VISIBILITY FIX (INI YANG PENTING)
         ===================== */
-       
-
         
         [data-theme="dark"] .text-secondary {
             color: var(--muted) !important;
@@ -345,11 +343,15 @@
                 <i id="themeIcon" class="bi bi-moon"></i>
             </button>
 
+            @if(auth()->check())
             <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
-                 style="width:40px;height:40px;">
-                {{ strtoupper(substr(auth()->user()->name,0,1)) }}
-            </div>
-            <span class="name">{{ auth()->user()->name }}</span>
+            style="width:40px;height:40px;">
+            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+        </div>
+        <span class="name">{{ auth()->user()->name }}</span>
+        @endif
+
+
         </div>
 
         <div class="container">

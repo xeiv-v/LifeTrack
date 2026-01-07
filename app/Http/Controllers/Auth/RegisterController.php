@@ -8,36 +8,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-
 class RegisterController extends Controller
 {
-    // Tampilkan form register
     public function showForm()
     {
         return view('auth.register');
     }
 
-    // Proses register
-public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|confirmed|min:6',
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:6',
+        ]);
 
-    // ✅ SIMPAN KE VARIABEL
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    // ✅ AUTO LOGIN (INI SEKARANG AMAN)
-    Auth::login($user);
+        Auth::login($user);
+        $request->session()->regenerate();
 
-    return redirect()->route('dashboard');
+        return redirect()->route('dashboard');
+    }
 }
-}
-
-

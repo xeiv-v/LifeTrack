@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\FinanceController;
@@ -12,41 +11,35 @@ use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes (BELUM LOGIN)
 |--------------------------------------------------------------------------
 */
 
-// Root: arahkan ke login
+// Root → redirect ke login
 Route::get('/', function () {
-    return redirect()->route('login.form');
+    return redirect()->route('login');
 });
 
-// Auth Routes: Login & Register
-
+// Register
 Route::get('/register', [RegisterController::class, 'showForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
+// Login
 Route::get('/login', [LoginController::class, 'showForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 
 
-// Forgot password atau reset bisa ditambahkan nanti
-
 /*
 |--------------------------------------------------------------------------
-| Routes untuk user yang sudah login
+| Authenticated Routes (SUDAH LOGIN)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
-
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     // Schedule
     Route::resource('schedule', ScheduleController::class)->except(['show']);
@@ -56,6 +49,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Wishlist
     Route::resource('wishlist', WishlistController::class)->except(['show']);
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Logout
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
