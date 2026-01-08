@@ -14,14 +14,38 @@ class DashboardController extends Controller
     {
         $userId = Auth::id();
 
+        /* =========================
+           RINGKASAN DASHBOARD
+        ========================== */
+
         $totalSchedule = Schedule::where('user_id', $userId)->count();
-        $totalIncome = Finance::where('user_id', $userId)->where('type', 'income')->sum('amount');
-        $totalExpense = Finance::where('user_id', $userId)->where('type', 'expense')->sum('amount');
+
+        $totalIncome = Finance::where('user_id', $userId)
+            ->where('type', 'income')
+            ->sum('amount');
+
+        $totalExpense = Finance::where('user_id', $userId)
+            ->where('type', 'expense')
+            ->sum('amount');
+
         $totalWishlist = Wishlist::where('user_id', $userId)->count();
 
-        $upcomingSchedules = Schedule::where('user_id', $userId)->orderBy('date')->take(5)->get();
-        $priorityWishlist = Wishlist::where('user_id', $userId)->orderBy('priority')->take(5)->get();
+        /* =========================
+           UPCOMING SCHEDULE
+        ========================== */
 
+        $upcomingSchedules = Schedule::where('user_id', $userId)
+            ->orderBy('date', 'asc')
+            ->take(5)
+            ->get();
+
+        /* PRIORITY WISHLIST= */
+        $priorityWishlist = Wishlist::where('user_id', $userId)
+            ->orderBy('priority', 'asc')
+            ->take(5)
+            ->get();
+
+        /*DATA GRAFIK KEUANGAN */
         $financeChart = Finance::select(
                 DB::raw('MONTH(date) as month'),
                 DB::raw("SUM(CASE WHEN type='income' THEN amount ELSE 0 END) as income"),
@@ -31,15 +55,22 @@ class DashboardController extends Controller
             ->groupBy(DB::raw('MONTH(date)'))
             ->orderBy('month')
             ->get()
-            ->map(fn($item) => [
-                'month' => date('F', mktime(0,0,0,$item->month,1)),
-                'income' => (int)$item->income,
-                'expense' => (int)$item->expense,
-            ]);
+            ->map(function ($item) {
+                return [
+                    'month'   => date('F', mktime(0, 0, 0, $item->month, 1)),
+                    'income' => (int) $item->income,
+                    'expense'=> (int) $item->expense,
+                ];
+            });
 
         return view('dashboard.index', compact(
-            'totalSchedule','totalIncome','totalExpense','totalWishlist',
-            'upcomingSchedules','priorityWishlist','financeChart'
+            'totalSchedule',
+            'totalIncome',
+            'totalExpense',
+            'totalWishlist',
+            'upcomingSchedules',
+            'priorityWishlist',
+            'financeChart'
         ));
     }
 }

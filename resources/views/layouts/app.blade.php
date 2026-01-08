@@ -350,8 +350,6 @@
         </div>
         <span class="name">{{ auth()->user()->name }}</span>
         @endif
-
-
         </div>
 
         <div class="container">
