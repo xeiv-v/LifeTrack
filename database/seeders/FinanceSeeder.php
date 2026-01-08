@@ -10,45 +10,24 @@ class FinanceSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::where('email', 'userdefault@gmail.com')->first();
+        $user = User::find(3);
         if (!$user) return;
 
         $finances = [
-            [
-                'user_id' => $user->id,
-                'date' => now()->startOfMonth(),
-                'type' => 'income',
-                'category' => 'Uang Saku',
-                'amount' => 1500000,
-                'description' => 'Uang bulanan',
-            ],
-            [
-                'user_id' => $user->id,
-                'date' => now()->addDays(3),
-                'type' => 'expense',
-                'category' => 'Baju',
-                'amount' => 150000,
-                'description' => 'Kaos Uniqlo',
-            ],
-            [
-                'user_id' => $user->id,
-                'date' => now()->addDays(7),
-                'type' => 'expense',
-                'category' => 'Transport',
-                'amount' => 60000,
-                'description' => 'Bensin euy',
-            ],
+            ['date' => now()->startOfMonth(), 'type' => 'income', 'category' => 'Uang Saku', 'amount' => 1500000, 'description' => 'Uang bulanan'],
+            ['date' => now()->addDays(3), 'type' => 'expense', 'category' => 'Baju', 'amount' => 150000, 'description' => 'Kaos Uniqlo'],
+            ['date' => now()->addDays(7), 'type' => 'expense', 'category' => 'Transport', 'amount' => 60000, 'description' => 'Bensin euy'],
         ];
 
         foreach ($finances as $finance) {
             Finance::firstOrCreate(
                 [
-                    'user_id' => $finance['user_id'],
+                    'user_id' => $user->id,
                     'category' => $finance['category'],
                     'amount' => $finance['amount'],
                     'date' => $finance['date'],
                 ],
-                $finance
+                array_merge($finance, ['user_id' => $user->id])
             );
         }
     }
