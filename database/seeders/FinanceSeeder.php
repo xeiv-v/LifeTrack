@@ -10,7 +10,7 @@ class FinanceSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::find(3);
+        $user = User::where('email', 'userdefault@gmail.com')->first();
         if (!$user) return;
 
         $finances = [

@@ -13,18 +13,17 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1️⃣ Pastikan user default ada (ID=3)
-        $user = User::updateOrCreate(
-            ['id' => 3],
+        // 1️⃣ Pastikan user default ada
+        $user = User::firstOrCreate(
+            ['email' => 'userdefault@gmail.com'],
             [
                 'name' => 'User Default',
-                'email' => 'userdefault@gmail.com',
                 'password' => Hash::make('12341234'),
                 'email_verified_at' => now(),
             ]
         );
 
-        // 2️⃣ Hapus data lama milik user default (ID=3)
+        // 2️⃣ Hapus data lama milik user default
         Wishlist::where('user_id', $user->id)->delete();
         Schedule::where('user_id', $user->id)->delete();
         Finance::where('user_id', $user->id)->delete();

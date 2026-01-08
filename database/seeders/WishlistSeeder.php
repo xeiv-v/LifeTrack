@@ -10,7 +10,7 @@ class WishlistSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::find(3); // pakai ID=3 langsung
+        $user = User::where('email', 'userdefault@gmail.com')->first();
         if (!$user) return;
 
         $wishlists = [
