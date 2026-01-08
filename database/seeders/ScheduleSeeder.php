@@ -12,7 +12,7 @@ class ScheduleSeeder extends Seeder
     {
         $user = User::first();
 
-        Schedule::insert([
+        $schedules = [
             [
                 'user_id' => $user->id,
                 'title' => 'Desain UI & UX',
@@ -20,6 +20,7 @@ class ScheduleSeeder extends Seeder
                 'time' => '08:00',
                 'status' => 'pending',
                 'notes' => 'Wireframe + Prototype',
+                'priority' => 'normal',
             ],
             [
                 'user_id' => $user->id,
@@ -28,6 +29,7 @@ class ScheduleSeeder extends Seeder
                 'time' => '13:00',
                 'status' => 'pending',
                 'notes' => 'Presentasi Mini Project',
+                'priority' => 'normal',
             ],
             [
                 'user_id' => $user->id,
@@ -36,7 +38,20 @@ class ScheduleSeeder extends Seeder
                 'time' => '23:59',
                 'status' => 'done',
                 'notes' => 'Upload ke E-learning',
+                'priority' => 'normal',
             ],
-        ]);
+        ];
+
+        foreach ($schedules as $schedule) {
+            Schedule::firstOrCreate(
+                [
+                    'user_id' => $schedule['user_id'],
+                    'title' => $schedule['title'],
+                    'date' => $schedule['date'],
+                    'time' => $schedule['time'],
+                ],
+                $schedule
+            );
+        }
     }
 }

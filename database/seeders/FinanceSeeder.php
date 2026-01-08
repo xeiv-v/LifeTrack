@@ -12,7 +12,7 @@ class FinanceSeeder extends Seeder
     {
         $user = User::first();
 
-        Finance::insert([
+        $finances = [
             [
                 'user_id' => $user->id,
                 'date' => now()->startOfMonth(),
@@ -34,9 +34,21 @@ class FinanceSeeder extends Seeder
                 'date' => now()->addDays(7),
                 'type' => 'expense',
                 'category' => 'Transport',
-                'amount' => 30000,
+                'amount' => 60000,
                 'description' => 'Bensin euy',
             ],
-        ]);
+        ];
+
+        foreach ($finances as $finance) {
+            Finance::firstOrCreate(
+                [
+                    'user_id' => $finance['user_id'],
+                    'category' => $finance['category'],
+                    'amount' => $finance['amount'],
+                    'date' => $finance['date'],
+                ],
+                $finance
+            );
+        }
     }
 }
